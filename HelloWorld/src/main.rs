@@ -1,24 +1,13 @@
-fn borrow_to_mut_watchout() {
-    let mut word = "UT".to_string(); 
-    fn update(word: &mut String) {
-        word.push_str("RGV");
-    }
-    update(&mut word);
-    println!("{word}")
-}
-
-fn borrowing_doesnot_move_ownership() {
-    let word: String = "UTRGV".to_string();
-    let borrow_word: &String = &word;
-    let borrowed_word: &String = &word;
-    println!("{} == {} == {}", word, borrow_word, borrowed_word);
+fn concat_strings(s1: &String, s2: &String) -> String {
+    let mut new_word: String = (*s1).clone();
+    new_word.push_str(s2);
+    new_word
+    //s1.clone() + s2
 }
 
 fn main() {
-    let x: i32 = 5;
-    let y: &i32 = &x;
-    println!("{}", y);
-    println!("{:p} == {:p}", y, &x);
-    borrowing_doesnot_move_ownership();
-    borrow_to_mut_watchout();
+    let s1 = String::from("Hello, ");
+    let s2 = String::from("World!");
+    let result = concat_strings(&s1, &s2);
+    println!("{}", result); // Should print: "Hello, World!"
 }

@@ -1,14 +1,24 @@
+fn borrow_to_mut_watchout() {
+    let mut word = "UT".to_string(); 
+    fn update(word: &mut String) {
+        word.push_str("RGV");
+    }
+    update(&mut word);
+    println!("{word}")
+}
+
+fn borrowing_doesnot_move_ownership() {
+    let word: String = "UTRGV".to_string();
+    let borrow_word: &String = &word;
+    let borrowed_word: &String = &word;
+    println!("{} == {} == {}", word, borrow_word, borrowed_word);
+}
+
 fn main() {
-   // Converting a string to a number
-   let num = "25";
-   let num: u32 = num.parse()
-       .expect("Please provide a valid number!");
-   
-   println!("Parsed number: {}", num);
-   
-   // Further transformations
-   let num = num + 25;
-   let num = num * 2;
-   
-   println!("Final value of num: {}", num);
+    let x: i32 = 5;
+    let y: &i32 = &x;
+    println!("{}", y);
+    println!("{:p} == {:p}", y, &x);
+    borrowing_doesnot_move_ownership();
+    borrow_to_mut_watchout();
 }

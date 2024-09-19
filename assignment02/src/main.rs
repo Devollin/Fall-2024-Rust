@@ -3,41 +3,43 @@ fn is_even(n: i32) -> bool {
 }
 
 fn main() {
-    const totalNumbers: usize = 10;
-    let numbers: [i32; totalNumbers] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const TOTAL_NUMBERS: usize = 10;
+    let numbers: [i32; TOTAL_NUMBERS] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     for index in numbers.iter() {
         let even = is_even(*index);
-
-        let displayText = if even {
+        let display_text = if even {
             "even"
         } else {
             "odd"
         };
 
-        println!("{} is {}.", index, displayText);
+        println!("{} is {}.", index, display_text);
     }
 
     for index in numbers.iter() {
         let divisible_by_five = index % 5 == 0;
         let divisible_by_three = index % 3 == 0;
-
         let result = if divisible_by_five & divisible_by_three {
             "FizzBuzz"
         } else if divisible_by_five {
            "Buzz"
         } else if divisible_by_three {
             "Fizz"
-        }
+        } else {
+            "NULL"
+        };
 
-        println!("{}: {}", index, result)
+        if result != "NULL" {
+            println!("{}: {}", index, result);
+        }
     }
 
     let mut counter = 0;
     let mut sum = 0;
     let mut largest_number = 0;
 
-    while counter != totalNumbers {
+    while counter != TOTAL_NUMBERS {
         sum += numbers[counter];
 
         if numbers[counter] > largest_number {

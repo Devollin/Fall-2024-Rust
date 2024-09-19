@@ -10,7 +10,7 @@ fn main() {
     let mut temperature = 35.0; // in fahrenheit, to start
     let mut counter = 0;
 
-    println!("Temperature of {} degrees fahrenheit is {} degrees celcius.", temperature, fahrenheit_to_celcius(temperature));
+    println!("Temperature of {}° fahrenheit is {}° celcius.", temperature, fahrenheit_to_celcius(temperature));
 
     loop {
         if counter == 5 {
@@ -20,6 +20,6 @@ fn main() {
         counter += 1;
         temperature += 1.0;
 
-        println!("Temperature of {} degrees fahrenheit is {} degrees celcius.", temperature, fahrenheit_to_celcius(temperature));
+        println!("Temperature of {}° fahrenheit is {}° celcius.", temperature, fahrenheit_to_celcius(temperature));
     }
 }

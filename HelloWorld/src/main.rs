@@ -63,6 +63,7 @@ fn main() {
 }
 */
 
+/*
 fn is_palindrome(x: i32) -> bool {
     if x < 0 {
         return false;
@@ -78,3 +79,121 @@ fn main() {
     println!("{}", is_palindrome(121).to_string());
     println!("{}", is_palindrome(-10).to_string());
 }
+*/
+
+/*
+struct Computer {
+    cpu: String,
+    ram: i32,
+}
+
+impl Computer {
+    fn do_thing(&self) -> String {
+        self.cpu.clone()
+    }
+
+    fn do_other_thing(&self) -> i32 {
+        self.ram.clone()
+    }
+
+    fn do_other_other_thing(&self) -> String {
+        "test".to_string()
+    }
+}
+
+fn main() {
+    let stuff = Computer {
+        cpu: "Ryzen 5".to_string(),
+        ram: 10,
+    };
+
+    let mut other_stuff = Computer {
+        cpu: "Ryzen 7".to_string(),
+        ram: 100,
+    };
+
+    other_stuff.cpu = "Ryzen 5.5".to_string();
+
+    println!("{}, {} GB RAM, running as \"{}\"", stuff.do_thing(), stuff.do_other_thing(), stuff.do_other_other_thing());
+    println!("{}, {} GB RAM, running as \"{}\"", other_stuff.do_thing(), other_stuff.do_other_thing(), other_stuff.do_other_other_thing());
+}
+*/
+
+/*
+use std::arch::asm;
+
+fn main() {
+    let message = b"Hello, direct syscall!\n";
+
+    unsafe {
+        // write syscall
+        asm!(
+            "mov rax, 1",  // syscall number for write
+            "mov rdi, 1",  // file descriptor: 1 is stdout
+            "syscall",
+            in("rsi") message.as_ptr(),
+            in("rdx") message.len(),
+            out("rax") _,
+            out("rcx") _,
+            out("r11") _,
+            clobber_abi("system")
+        );
+
+        // exit syscall
+        asm!(
+            "mov rax, 60", // syscall number for exit
+            "xor rdi, rdi", // status code 0
+            "syscall",
+            options(noreturn)
+        );
+    }
+}
+*/
+
+/*
+use std::fs::File;
+use std::io::Write;
+
+fn create_and_write_to_file() {
+    let mut file = File::create("example.txt").unwrap();
+    let file1 = File::create("example1.txt").unwrap();
+
+    println!("{:?}", file1);
+    writeln!(file, "Hello, Rust file operations!").unwrap();
+    writeln!(file, "This is a new line.").unwrap();
+}
+
+fn main() {
+    create_and_write_to_file();
+    println!("File created and written successfully.");
+}
+*/
+
+/*
+use std::fs::File;
+use std::io::{Read, BufReader, BufRead};
+
+fn read_entire_file() {
+    let mut file = File::open("example.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap(); // loads entire file into variable
+    println!("File contents:\n{}", contents);
+}
+
+fn read_file_line_by_line() {
+    let file = File::open("example.txt").unwrap();
+    let reader = BufReader::new(file);
+
+    for line in reader.lines() {
+        println!("{}", line.unwrap());
+    }
+}
+
+fn main() {
+    println!("Reading entire file:");
+    read_entire_file();
+
+    println!("\nReading file line by line:");
+    read_file_line_by_line();
+}
+*/

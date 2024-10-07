@@ -197,3 +197,45 @@ fn main() {
     read_file_line_by_line();
 }
 */
+
+/*
+use std::fs::OpenOptions;
+use std::io::Write;
+
+// echo "Hello World!" > msg.txt
+// cat msg.txt
+// echo "Hello World 2!" >> msg.txt
+// cat msg.txt
+
+fn append_to_file() {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open("example.txt")
+        .unwrap();
+
+    writeln!(file, "This line is appended to the file.").unwrap();
+}
+
+fn main() {
+    append_to_file();
+    println!("Successfully appended to the file.");
+}
+*/
+
+/*
+use std::process::Command;
+
+fn executing_os_commands_linux() {
+    let output = Command::new("python3")
+        .arg("my_script.py")
+        .output()
+        .expect("Failed to execute command");
+
+    println!("Command output: {}", String::from_utf8_lossy(&output.stdout));
+}
+
+fn main() {
+    executing_os_commands_linux();
+}
+*/
+

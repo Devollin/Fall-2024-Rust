@@ -8,14 +8,38 @@ struct Book {
 }
 
 fn save_books(books: &Vec<Book>, filename: &str) {
-    let file = File::create("books.txt");
-    // TODO: Implement this function
-    // Hint: Use File::create() and write!() macro
+    let mut file = File::create(filename).unwrap();
+    let mut index = 0;
+
+    for book in books {
+        write!(file, "{}|{}|{}", book.title, book.author, book.year).unwrap();
+
+        index += 1;
+
+        if index != books.len() {
+            write!(file, "\n").unwrap();
+        }
+    }
 }
 
 fn load_books(filename: &str) -> Vec<Book> {
-    // TODO: Implement this function
-    // Hint: Use File::open() and BufReader
+    let file = File::open(filename).unwrap();
+    let reader = BufReader::new(file);
+    let mut books: Vec<Book> = Vec::new();
+
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let tokens: Vec<&str> = line.split('|').collect();
+        let book = Book {
+            title: String::from(tokens[0]),
+            author: String::from(tokens[1]),
+            year: (*tokens[2]).parse::<u16>().unwrap(),
+        };
+
+        books.push(book);
+    }
+    
+    return books;
 }
 
 fn main() {

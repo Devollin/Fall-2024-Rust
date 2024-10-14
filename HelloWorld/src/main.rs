@@ -239,3 +239,142 @@ fn main() {
 }
 */
 
+/*
+enum Pets {
+    Dog(String, u8),
+    Hamster(String),
+}
+
+impl Pets {
+    fn introduce_yourself(&self) {
+        match &self {
+            Pets::Dog(name: &String, age: &u8) => {
+                println!("Hey, my name is {}, I am {} years old!", name, age);
+            },
+            Pets::Hamster(name: &String) => {
+                println!("Hey, my name is {}", name);
+            },
+        }
+    }
+}
+
+
+fn main() {
+    let pet1: Pets = Pets::Dog(format!("Black", 3);
+    let pet2: Pets = Pets::Hamster(format!("Gerbbie"));
+
+    pet1.introduce_yourself();
+    pet2.introduce_yourself();
+}
+*/
+
+/*
+use std::fs;
+use std::io::{self, Write};
+use std::path::Path;
+
+enum FileOperation {
+    Create(String),
+    Rename(String, String),
+    Write(String, String),
+}
+
+impl FileOperation {
+    fn get_user_input() -> String {
+        let mut buffer: String = String::new();
+        io::stdin().read_line(&mut buffer).unwrap();
+
+        let buffer = buffer.trim().to_string();
+
+        return buffer;
+    }
+
+    fn validate_file(filename: &String) -> bool {
+        Path::new(filename).exists()
+    }
+}
+
+
+fn perform_operation(operation: FileOperation) {
+    match operation {
+        FileOperation::Create(filename) => {
+            if !FileOperation::validate_file(&filename) {
+                fs::File::create(filename.clone()).unwrap();
+
+                println!("File '{}' created successfully.", filename);
+            } else {
+                println!("File '{}' could not be created because a file with the same name already exists.", filename);
+            }
+        }
+
+        FileOperation::Rename(old_name, new_name) => {
+            if FileOperation::validate_file(&old_name) && !FileOperation::validate_file(&new_name) {
+                fs::rename(old_name.clone(), new_name.clone()).unwrap();
+
+                println!("File renamed from '{}' to '{}' successfully.", old_name, new_name);
+            } else if FileOperation::validate_file(&old_name) {
+                println!("File could not be renamed because a file with the new name already exists!");
+            } else {
+                println!("File with name {} does not exist! Failed to rename!", old_name);
+            } 
+        }
+
+        FileOperation::Write(filename, content) => {
+            if FileOperation::validate_file(&filename) {
+                let mut file = fs::File::create(filename.clone()).unwrap();
+
+                write!(file, "{}", content);
+                println!("Successfully edited content of file!");
+            } else {
+                println!("File with name {} does not exist! Failed to fill!", filename);
+            }
+        }
+    }
+}
+
+fn main() {
+    for _ in 0..2 {
+        println!("Choose an operation:");
+        println!("1. Create a new file");
+        println!("2. Rename an existing file");
+        println!("3. Edit contents of existing file");
+    
+        let mut choice = String::new();
+        io::stdin().read_line(&mut choice).unwrap();
+    
+        match choice.trim() {
+            "1" => {
+                println!("Type a name for the file you want to create:");
+                let input = FileOperation::get_user_input();
+                perform_operation(FileOperation::Create(input));
+                // TODO: Prompt for new filename and call perform_operation
+            }
+            "2" => {
+                println!("Type the name of the file you want to rename:");
+                let inputA: String = FileOperation::get_user_input();
+                println!("Type the new name for the file you want to rename:");
+                let inputB: String = FileOperation::get_user_input();
+                perform_operation(FileOperation::Rename(inputA, inputB));
+                // TODO: Prompt for old and new filenames and call perform_operation
+            }
+            "3" => {
+                println!("Type the name of the file you want to edit:");
+                let inputA: String = FileOperation::get_user_input();
+                println!("Type the contents of the file:");
+                let inputB: String = FileOperation::get_user_input();
+                perform_operation(FileOperation::Write(inputA, inputB));
+            }
+            _ => println!("Invalid choice"),
+        }
+    }
+}
+*/
+
+fn main() {
+    let new_file: &str = "rustandlinux.txt";
+    let command_to_execute: String = format!("touch {}", new_file);
+    println!("{}", command_to_execute);
+
+    let command = Command::new{program: "sh"}.arg("-c").arg(command_to_execute).spawn();
+
+}

@@ -39,9 +39,9 @@ mod tests {
 
     #[test]
     fn test_new_account() {
-        let new_account = BankAccount::new(15.00);
+        let new_account = BankAccount::new(15.21);
 
-        assert_eq!(new_account.balance(), 15.00);
+        assert_eq!(new_account.balance(), 15.21);
     }
 
     #[test]
@@ -75,7 +75,7 @@ mod tests {
         assert_eq!(new_account.balance(), 11.00);
         new_account.apply_interest(-1.0);
         assert_eq!(new_account.balance(), 11.00);
-        new_account.withdraw(-11.00);
+        new_account.withdraw(11.00);
         new_account.apply_interest(1.00);
         assert_eq!(new_account.balance(), 0.00);
     }

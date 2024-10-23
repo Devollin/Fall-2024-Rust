@@ -370,6 +370,7 @@ fn main() {
 }
 */
 
+/*
 fn main() {
     let new_file: &str = "rustandlinux.txt";
     let command_to_execute: String = format!("touch {}", new_file);
@@ -378,3 +379,88 @@ fn main() {
     let command = Command::new{program: "sh"}.arg("-c").arg(command_to_execute).spawn();
 
 }
+*/
+
+/*
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+fn panic_examples() {
+    println!("Everything is good");
+    // panic!("Crash the program, stop running, clean the memory");
+    println!("This won't be printed.");
+    let v = vec![1, 2, 3];
+    println!("{:?}", v[99]); // This will cause a panic because the index is out of bounds
+}
+
+use std::fs::File;
+
+fn main() {
+    let f = File::open("hello.txt").unwrap();
+    println!("Hello");
+
+    let f = match f {
+        Ok(file) => file,
+        Err(error) => {
+            panic!("Problem opening the file: {:?}", error)
+        },
+    };
+}*/
+/*
+use std::io::ErrorKind;
+use std::fs::File;
+
+fn main() {
+    let f = File::open("my_protected_folder/exam.txt");
+    println!("{:?}", f);
+    let f = match f {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("my_protected_folder/exam.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file: {:?}", e),
+            },
+            other_error => panic!("Problem opening the file: {:?}", other_error),
+        },
+    };
+}*/
+
+/*
+use std::fs::File;
+use std::io::Read;
+use std::io;
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let f = File::open("username.txt");
+    let mut f = match f {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+    let mut s = String::new();
+    match f.read_to_string(&mut s) {
+        Ok(_) => Ok(s),
+        Err(e) => Err(e),
+    }
+}
+
+fn read_username_from_file_2ver() -> Result<String, io::Error> {
+    let mut f = File::open("username.txt")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s)?;
+    return Ok(s);
+}
+
+fn read_username_from_file_3ver() -> Result<String, io::Error> {
+    let mut s: String = String::new();
+    File::open("hello.txt")?.read_to_string(&mut s)?;
+    Ok(s)
+}
+
+fn main() {
+    let username2 = read_username_from_file_2ver().unwrap();
+    let username3 = read_username_from_file_3ver().unwrap();
+    println!("{:?}{:?}", username2, username3);
+}*/
+

@@ -464,3 +464,633 @@ fn main() {
     println!("{:?}{:?}", username2, username3);
 }*/
 
+/*
+pub trait Comparison {
+    fn get_comparable_number(&self) -> f32;
+}
+
+#[derive(Debug, PartialEq, PartialOrd)]
+struct Item {
+    price: i32,
+}
+
+impl Item {
+    fn new(new_price: i32) -> Item {
+        Item {
+            price: new_price,
+        }
+    }
+}
+
+impl Comparison for Item {
+    fn get_comparable_number(&self) -> f32 {
+        self.price as f32
+    }
+}
+
+impl Comparison for i32 {
+    fn get_comparable_number(&self) -> f32 {
+        *self as f32
+    }
+}
+
+impl Comparison for f32 {
+    fn get_comparable_number(&self) -> f32 {
+        *self
+    }
+}
+
+fn largest_int(a: i32, b: i32) -> i32 {
+    if a > b {
+        return a;
+    }
+
+    b
+}
+
+fn largest_double(a: f32, b: f32) -> f32 {
+    if a > b {
+        return a;
+    }
+
+    b
+}
+
+fn largest_item(item1: Item, item2: Item) -> Item {
+    if item1 > item2 {
+        return item1;
+    }
+
+    item2
+}
+
+fn largest_universal<T: Comparison> (a: T, b: T) -> T {
+    if a.get_comparable_number() > b.get_comparable_number() {
+        return a;
+    }
+
+    b
+}
+
+
+fn main() {
+    let item1: Item = Item::new(100);
+    let item2: Item = Item::new(1000);
+
+    let item3: Item = Item::new(100);
+    let item4: Item = Item::new(1000);
+
+    println!("{}", largest_int(10, 50));
+    println!("{}", largest_double(1.1, 5.5));
+    println!("{:?}", largest_item(item1, item2));
+    println!("{:?}", largest_universal(10, 50));
+    println!("{:?}", largest_universal(1.1, 5.5));
+    println!("{:?}", largest_universal(item3, item4));
+}*/
+
+/*
+#[derive(Debug)]
+struct Person<U, T> {
+    name: U,
+    age: T,
+}
+
+impl<U, T> Person<U, T> {
+    fn new(name: U, age: T) -> Person<U, T> {
+        Person {
+            name: name,
+            age: age,
+        }
+    }
+
+    fn add(&mut self, extra: T) {
+        self.age = extra;
+    }
+}
+
+fn main() {
+    let mut p1 = Person::new("John", 5);
+    p1.add(7);
+
+    let mut p2 = Person::new("Bipper", "six".to_string());
+    p2.add("bipper bopper".to_string());
+
+    println!("{:?}", p1);
+    println!("{:?}", p2);
+}*/
+
+/*
+pub trait Talkative {
+    fn talk(&self);
+}
+
+pub struct Person {
+    name: String,
+}
+
+pub struct Parent {
+    name: String,
+    child: Person,
+}
+
+impl Person {
+    fn new(name: String) -> Person {
+        Person {
+            name: name,
+        }
+    }
+}
+
+impl Parent {
+    fn new(name: String, child: Person) -> Parent {
+        Parent {
+            name: name,
+            child: child,
+        }
+    }
+}
+
+impl Talkative for Person {
+    fn talk(&self) {
+        println!("Hi my name is {}!", self.name);
+    }
+}
+
+impl Talkative for Parent {
+    fn talk(&self) {
+        println!("Hi my name is {} and this is my child...", self.name);
+
+        self.child.talk();
+    }
+}
+
+fn main() {
+    let child: Person = Person::new("Devi".to_string());
+    let parent: Parent = Parent::new("Mother".to_string(), child);
+
+    let new_vec: Vec<dyn Talkative> = Vec::new(child, parent);
+
+    for idx in new_vec.iter() {
+        new_vec[idx].talk();
+    }
+
+    parent.talk();
+}*/
+
+/*
+fn same_method_same_logical_entity(){
+
+    // this is a big idea.
+    // bind different data types with same behaviour
+    // as one logical unit
+    pub trait AreaInfo {
+        fn get_area(&self) -> f64;
+        fn say_hi(&self);
+    }
+    
+
+    pub struct Rectangle{
+        pub width: f64,
+        pub height: f64,
+    }
+
+    impl AreaInfo for Rectangle {
+        fn get_area(&self) -> f64 {
+            self.width * self.height
+        }
+
+        fn say_hi(&self) {
+            println!("Hi!");
+        }
+    }
+
+
+    pub struct Circle {
+        pub radius: f64,
+    }
+
+    impl AreaInfo for Circle {
+        fn get_area(&self) -> f64 {
+            self.radius * self.radius * 3.14 as f64
+        }
+
+        fn say_hi(&self) {
+            println!("Hi!");
+        }
+    }
+
+    // You could say, it's almost the same, well what is same for you is not the same for the compiler.
+
+    // Make sure nothing is broken
+
+    let rec = Rectangle {width:5.0,height:8.0};
+    let circle = Circle {radius: 5.0};
+
+    println!("Area of a rectangle {}", rec.get_area());
+    println!("Area of a circle {}", circle.get_area());
+
+    // And now the Magic or cheating, I don't know how to call it
+    
+    let shapes: Vec<&dyn AreaInfo> = vec![&rec,&circle];
+
+    // dyn -> dynamic keyword 
+    // https://doc.rust-lang.org/std/keyword.dyn.html
+
+    // Dynamically dispatch the type of object
+    for shape in shapes.iter() {
+        println!("{}", shape.get_area());
+        shape.say_hi();
+    }
+}
+
+fn main() {
+    same_method_same_logical_entity();
+}*/
+
+/*
+fn benefits_of_logical_entity(){
+        
+    pub trait Summary { // Trait should be public if we want to allow others to implement it
+        fn summarize(&self) -> String; // no body just declaration like interface
+    }
+    
+    pub struct NewsArticle {
+        pub headline: String,
+        pub location: String,
+        pub author: String,
+        pub content: String,
+    }
+    
+    impl Summary for NewsArticle { 
+        fn summarize(&self) -> String { 
+            format!("{}, by {} ({})", self.headline, self.author, self.location)
+        }
+    }
+    
+    pub struct Tweet {
+        pub username: String,
+        pub content: String,
+        pub reply: bool,
+        pub retweet: bool,
+    }
+    
+    impl Summary for Tweet {
+        fn summarize(&self) -> String {
+            format!("{}: {}", self.username, self.content)
+        }
+    }
+    
+    let tw = Tweet {
+             username: String::from("Elon"),
+             content: String::from("to the Moon"),
+             reply: false,
+             retweet: false,
+         };
+    println!("{}",tw.summarize());
+        
+    let article = NewsArticle {
+             headline: String::from("Elon sells Bitcoin"),
+             location: String::from("Menlo Park, CA, USA"),
+             author: String::from("CNN"),
+             content: String::from("FBI investigates"),
+         };
+    
+    println!("{}", article.summarize());
+
+    // Real reason we need to use traits or interfaces
+    // Change you coding paradigm, start to programm to behavior!
+
+    pub fn notify_sugar_syntax(item: impl Summary) { // your function will accept any parameter that implements Summary trait. (so all parameters will have the common behavior)
+        println!("Breaking news! {}", item.summarize());
+    }
+
+    // Same logic as above but explicit, this is refereed to the idea TRAIT BOUNDS
+    // or in simple language, sometimes you want to accept parameters, which implement more than one trait(have more than one common method to call on it)
+    
+    pub fn notify_real_syntax<T: Summary>(item: T){ // please notice generics you are saying. My function will accept as a parameter a generic type T which implements Summary trait, because I just want to make sure that I can call the methods safely.
+        
+        println!("Breaking news! {}", item.summarize());
+    }
+
+
+    notify_real_syntax(tw);
+    notify_sugar_syntax(article);
+
+}
+
+fn main() {
+    benefits_of_logical_entity();
+}*/
+
+/*
+fn last_lecture_problem_fixing(){
+    fn largest<T: PartialOrd + Copy>(list: &[T]) -> T { 
+        let mut largest = list[0]; // we need Copy trait to achieve that operation
+        
+        for &item in list.iter() {
+            if item > largest { // we need PartialOrd trait to be able to compare elements
+                largest = item;
+            }
+        }
+        largest
+    }
+
+    // where clause
+    fn largest_2<T>(list: &[T]) -> T 
+        where T: PartialOrd + Copy,
+        {
+        let mut largest = list[0]; // we need Copy trait to achieve that operation
+        
+        for &item in list.iter() {
+            if item > largest { // we need PartialOrd trait to be able to compare elements
+                largest = item;
+            }
+        }
+        largest
+    }
+
+
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&number_list);
+    println!("The largest number is {}", result);
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_2(&char_list);
+    println!("The largest char is {}", result);
+}
+*/
+
+/*
+hw for generics and traits
+
+three structs: gold bitcoin smp500 (check this; will be on blackboard)
+implement trait PriceItem for all 3
+make api call for prices within trait (can hardcode; but no)
+make a vector to store one of each
+iterate every 10 seconds
+print as a string IN DOLLARS
+*/
+
+/*
+// Define our data structure
+struct Data {
+    value: i32,
+}
+
+// Higher-order function: defines what needs to be done
+fn process_data(data: &mut [Data], operation: fn(&mut Data)) {
+    for item in data.iter_mut() {
+        operation(item);
+    }
+}
+
+// Specific operations: actual functions which do the work
+fn double_value(data: &mut Data) {
+    data.value *= 2;
+}
+
+fn square_value(data: &mut Data) {
+    data.value *= data.value;
+}
+
+// Helper function to print values without closures
+fn print_values(items: &[Data]) {
+    print!("Values: ");
+    for (i, item) in items.iter().enumerate() {
+        if i > 0 {
+            print!(", ");
+        }
+        print!("{}", item.value);
+    }
+    println!();
+}
+
+fn main() {
+    let mut items = vec![
+        Data { value: 1 },
+        Data { value: 2 },
+        Data { value: 3 },
+        Data { value: 4 },
+        Data { value: 5 },
+    ];
+    
+    // The specific operation is decided here
+    print!("Original ");
+    print_values(&items);
+    
+    process_data(&mut items, double_value);
+    print!("After doubling: ");
+    print_values(&items);
+    
+    // We can easily switch to a different operation
+    process_data(&mut items, square_value);
+    print!("After squaring: ");
+    print_values(&items);
+}
+*/
+
+/*
+fn add(x: i32, y: i32) -> i32 {
+    x + y
+}
+
+fn sub(x: i32, y: i32) -> i32 {
+    x - y
+}
+
+fn mul(x: i32, y: i32) -> i32 {
+    x * y
+}
+
+struct Calculator {
+    addition: fn(i32, i32) -> i32,
+    subtraction: fn(i32, i32) -> i32,
+    multiplication: fn(i32, i32) -> i32,
+}
+
+impl Calculator {
+    fn new(addition_behavior: fn(i32, i32) -> i32, subtraction_behavior: fn(i32, i32) -> i32, multiplication_behavior: fn(i32, i32) -> i32) -> Calculator {
+        Calculator {
+            addition: addition_behavior,
+            subtraction: subtraction_behavior,
+            multiplication: multiplication_behavior,
+        }
+    }
+
+    fn add(&self, x: i32, y: i32) -> i32 {
+        (self.addition)(x, y)
+    }
+
+    fn sub(&self, x: i32, y: i32) -> i32 {
+        (self.subtraction)(x, y)
+    }
+    
+    fn mul(&self, x: i32, y: i32) -> i32 {
+        (self.multiplication)(x, y)
+    }
+}
+
+
+fn main() {
+    let c = Calculator::new(add, sub, mul);
+    let result_a = c.add(5, 10);
+    let result_b = c.sub(10, 5);
+    let result_c = c.mul(10, 10);
+
+    println!("{}, {}, {}", result_a, result_b, result_c);
+}*/
+
+/*
+fn essence_example_closure() {
+    let x = 21;
+    let mut message = "hello from closure".to_string();
+    let get_answer = |y: i32| x + y;
+    let get_answer2 = |y: i32| {
+        message.push_str("does the magic work");
+        println!("{}", message);
+        x + y
+    };
+    // fn
+    // fn mut
+    // fn once
+    
+    println!("{:?}", get_answer(21));  // Output: 42
+    println!("{:?}", get_answer2(21));  // Output: 42
+
+    println!("{:?}", message);  // Output: 42
+}
+
+fn main() {
+    essence_example_closure();
+}*/
+
+/*
+fn using_function_as_variable() {
+    // Regular function
+    fn add(x: i32, y: i32) -> i32 {
+        x + y
+    }
+
+    // Function pointer
+    let f = add;
+
+    // Closure with explicit types
+    let f = |x: i32, y: i32| { x + y };
+
+    // Simplified closure
+    let f = |x: i32, y: i32| x + y;
+
+    // Closure with inferred types
+    let f = |x, y| x + y;
+    
+    let result = f(1, 2);
+    println!("{}", result);  // Output: 3
+}
+
+fn using_function_as_parameter() {
+    fn add(x: i32, y: i32) -> i32 {
+        x + y
+    }
+
+    fn calculator(x: i32, y: i32, operation: fn(i32, i32) -> i32) {
+        let result = operation(x, y);
+        println!("Result of operation: {}", result);    
+    }
+
+    calculator(1, 2, add);
+    calculator(1, 2, |x, y| x + y);
+    calculator(1, 2, |x, y| x - y);
+    calculator(1, 2, |x, y| x * y);
+}
+*/
+
+/*
+use std::ops::Add;
+
+fn f<T, U>(x:T, y:U) -> T {
+    where T:Add<Output>, U:Add{
+        x + y as T
+    }
+}*/
+
+/*
+fn main() {
+    using_function_as_variable();
+    using_function_as_parameter();
+    let result1 = f(1,2.0);
+    println!("{}", result1);
+    let result2 = f("1".to_string(), "2");
+    println!("{}", result2);
+}*/
+
+/*
+fn using_function_as_parameter() {
+    fn add(x: i32, y: i32) -> i32 {
+        x + y
+    }
+
+    fn calculator(x: i32, y: i32, operation: fn(i32, i32) -> i32) {
+        let result = operation(x, y);
+        println!("result of operation: {}", result);
+    }
+
+    calculator(1, 2, add);
+    calculator(1, 2, |x, y| x + y);
+    calculator(1, 2, |x, y| x - y);
+    calculator(1, 2, |x, y| x * y);
+}
+
+fn main() {
+    using_function_as_parameter();
+}*/
+
+/*
+fn box_pointer_intro() {
+    let box_default = Box::new(100);
+    println!("{}", box_default);  // Output: 100
+}
+
+fn main() {
+    box_pointer_intro();
+}*/
+/*
+fn box_polymorphism() {
+    use core::fmt::Debug;
+    
+    trait Animal: Debug {
+        fn sound(&self) -> String;
+    }
+    
+    #[derive(Debug)]
+    struct Dog;
+    
+    impl Animal for Dog {
+        fn sound(&self) -> String {
+            "Woof woof".to_string()
+        }
+    }
+    
+    #[derive(Debug)]
+    struct Cat;
+    
+    impl Animal for Cat {
+        fn sound(&self) -> String {
+            "Meow meow".to_string()
+        }
+    }
+    
+    let mut zoo: Vec<Box<dyn Animal>> = Vec::new();
+    
+    zoo.push(Box::new(Dog{}));
+    zoo.push(Box::new(Cat{}));
+    
+    for animal in zoo {
+        println!("{:?} says {}", animal, animal.sound());
+    }
+}
+
+fn main() {
+    box_polymorphism();
+}*/

@@ -1094,3 +1094,197 @@ fn box_polymorphism() {
 fn main() {
     box_polymorphism();
 }*/
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+fn reference_counting_simple() {
+    let num = 10;
+    let num_in_heap = Rc::new(num);
+
+    let _copy2_of_num = Rc::clone(&num_in_heap);
+    let _copy3_of_num = Rc::clone(&num_in_heap);
+    let _copy4_of_num = Rc::clone(&num_in_heap);
+
+    println!("num in heap has: {} references", 
+             Rc::strong_count(&num_in_heap));
+}
+
+struct FamilyMember {
+    tv: Rc<TV>,
+}
+
+struct TV;
+
+fn sharing_resource_rc_count() {
+    fn member_start_watch_tv() -> FamilyMember {
+        let tv_is_on = Rc::new(TV);
+        FamilyMember {
+            tv: Rc::clone(&tv_is_on),
+        }
+    }
+
+    let dad = member_start_watch_tv();
+    println!("How many people watching {}", Rc::strong_count(&dad.tv));
+
+    let mom = FamilyMember { tv: Rc::clone(&dad.tv) };
+    println!("How many people watching {}", Rc::strong_count(&dad.tv));
+
+    let me = FamilyMember { tv: Rc::clone(&dad.tv) };
+    println!("How many people watching {}", Rc::strong_count(&me.tv));
+
+    drop(dad);
+    drop(me);
+
+    println!("How many people watching {}", Rc::strong_count(&mom.tv));
+}
+
+fn ref_cell_simple() {
+    let num = 10;
+    let data = RefCell::new(num);
+    
+    // Borrow the data immutably
+    let data_ref = data.borrow();
+    println!("Data: {}", data_ref);
+
+    // Drop the immutable borrow so we can borrow mutably
+    drop(data_ref);
+
+    println!("Data: {:?}", data);
+
+    // Borrow the data mutably
+    let mut data_mut = data.borrow_mut();
+    *data_mut += 1;
+    println!("Data: {}", data_mut);
+}
+
+fn interior_mutability() {
+    #[derive(Debug)]
+    struct MyData {
+        data: f64
+    }
+
+    let base: Rc<RefCell<MyData>> = Rc::new(RefCell::new(
+        MyData {
+            data: 70.00
+        }
+    ));
+
+    println!("base: {:?}", base);
+    
+    {
+        let mut base_2 = base.borrow_mut();
+        base_2.data -= 10.00;
+        println!("base_2: {:?}", base_2);
+    }
+ 
+    println!("base: {:?}", base);
+ 
+    let mut base_3 = base.borrow_mut();
+    base_3.data += 30.00;
+ 
+    println!("base: {:?}", base);
+    println!("base_3: {:?}", base_3);
+}
+
+fn sharing_resource_refcell_count() {
+    struct FamilyMember {
+        tv: Rc<RefCell<TV>>,
+    }
+
+    #[derive(Debug)]
+    struct TV {
+        channel: String,
+    }
+
+    fn member_start_watch_tv() -> FamilyMember {
+        let tv_is_on = Rc::new(RefCell::new(TV{channel:"BBC".to_string()}));
+        
+        FamilyMember {
+            tv: tv_is_on, 
+        }
+    }
+
+    let dad = member_start_watch_tv();
+    let mom = FamilyMember { tv: Rc::clone(&dad.tv) };
+    println!("TV channel for mom {:?}", mom.tv);
+
+    let mut remote_control = dad.tv.borrow_mut();
+    println!("TV channel {:?}", remote_control);
+
+    remote_control.channel = "MTV".to_string();
+    println!("TV channel {:?}", remote_control);
+    drop(remote_control);
+    println!("TV channel for mom {:?}", mom.tv);
+}
+
+fn joint_bank_account_example() {
+    #[derive(Debug)]
+    struct BankAccount {
+        balance: RefCell<f64>,
+    }
+    
+    impl BankAccount {
+        fn new(initial_balance: f64) -> Rc<Self> {
+            Rc::new(BankAccount {
+                balance: RefCell::new(initial_balance),
+            })
+        }
+    
+        fn deposit(&self, amount: f64) {
+            let mut balance = self.balance.borrow_mut();
+            *balance += amount;
+            println!("Deposited ${:.2}, new balance: ${:.2}", amount, *balance);
+        }
+    
+        fn withdraw(&self, amount: f64) {
+            let mut balance = self.balance.borrow_mut();
+            if *balance >= amount {
+                *balance -= amount;
+                println!("Withdrew ${:.2}, new balance: ${:.2}", amount, *balance);
+            } else {
+                println!("Insufficient funds. Current balance: ${:.2}", *balance);
+            }
+        }
+    }
+    
+    let account = BankAccount::new(1000.0);
+    let joint_account = Rc::clone(&account);
+
+    account.deposit(500.0);
+    joint_account.withdraw(200.0);
+    account.withdraw(1500.0);
+}
+
+struct Person {
+    name: String,
+    age: i32,
+}
+
+impl Person {
+    fn new(name: String, age: i32) -> Self {
+        Person {
+            name: name,
+            age: age,
+        }
+    }
+}
+
+fn main() {
+    let p = Person::new("Devi".to_string(), 23);
+    let watchers: i32 = 0;
+
+
+    println!("reference counting simple");
+    reference_counting_simple();
+    println!("\nsharing resource rc count");
+    sharing_resource_rc_count();
+    println!("\nref cell simple");
+    ref_cell_simple();
+    println!("\ninterior mutability");
+    interior_mutability();
+    println!("\nsharing resource refcell count");
+    sharing_resource_refcell_count();
+    println!("\njoint bank account example");
+    joint_bank_account_example();
+}

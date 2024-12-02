@@ -1094,7 +1094,7 @@ fn box_polymorphism() {
 fn main() {
     box_polymorphism();
 }*/
-
+/*
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -1287,4 +1287,97 @@ fn main() {
     sharing_resource_refcell_count();
     println!("\njoint bank account example");
     joint_bank_account_example();
+}*/
+
+/*
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("Thread: {}", i);
+            thread::sleep(Duration::from_millis(10));
+        }
+    });
+
+    let handle2 = thread::spawn(|| {
+        for i in 1..10 {
+            println!("Thread: {}", i);
+            thread::sleep(Duration::from_millis(10));
+        }
+    });
+
+    handle.join().unwrap();
+    handle2.join().unwrap();
+}*/
+
+/*
+use std::thread;
+use std::time::Duration;
+
+fn simple_spawn_join() {
+    println!("Intro to Concurrency");
+    let steps = Box::new(5);
+    let thread = std::thread::spawn(move ||{
+        // important to notice usage of closure
+        // it captures the environment, and steps
+        // variable becomes available in our new thread
+        for step in 1..=*steps{
+            std::thread::sleep(std::time::Duration::from_secs(1));
+            println!("Thread step {}",step);
+        }
+        
+        "Goodbye!" // important thread could return values
+})}
+
+fn main() {
+    println!("Spawned a thread!");
+
+    // Very important moment to understand closure captures
+    // the environment
+
+    //println!("steps now unavailable {}", steps);
+    std::thread::sleep(std::time::Duration::from_secs(3));
+    println!("Main thread slept for 3 seconds");
+    // Now we join our spawned thread with it's returned value, if we don't our function just returns
+    // without waiting for spawned thread
+    let result = thread.join().unwrap(); // we need to unwrap result enum,because potentially thread could panick and we end up with err
+
+    println!("Thread returned: {:?}", result);
+}*/
+
+fn sending_data_across_threads() {
+    //extern crate rand; // 0.8.5
+
+    use std::thread;
+    // multiproducer, single consumer
+    use std::sync::mpsc::channel;
+
+    let (sender,reciever) = channel();
+
+    for i in 0..10 {
+        let sender = sender.clone();
+        thread::spawn(move || {
+            println!("sending: {}",i);
+            sender.send(i).unwrap(); // any data could be passed to reciever
+            // as well as sending could fail
+        });
+    }
+
+    for _ in 0..10 {
+        let msg = reciever.recv().unwrap();
+        println!(" recieved {}", msg );
+    }
+    // what is important to notice, data will be send and recieved in random order
+    // but you will get them in exact order, just be aware of potential queue
+
+    // basically CPU whim
+
 }
+
+fn main() {
+    sending_data_across_threads();
+}
+
+// FINAL PROJECT
